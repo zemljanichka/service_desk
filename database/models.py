@@ -1,8 +1,9 @@
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, select
+from sqlalchemy import (Column, DateTime, Enum, ForeignKey, Integer, String,
+                        select)
 from sqlalchemy.orm import DeclarativeBase
 
 from database.db import SessionLocal
-from schemas.schemas import Status
+from schemas import Status
 
 
 class BaseModel(DeclarativeBase):

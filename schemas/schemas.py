@@ -1,18 +1,6 @@
 import datetime
-from enum import Enum
 
 from pydantic import BaseModel
-
-
-class Status(Enum):
-    pending = "pending"
-    processing = "processing"
-    closed = "closed"
-
-
-class Ordering(Enum):
-    asc = "asc"
-    desc = "desc"
 
 
 class Operator(BaseModel):
