@@ -1,6 +1,7 @@
 import datetime
-from pydantic import BaseModel
 from enum import Enum
+
+from pydantic import BaseModel
 
 
 class Status(Enum):

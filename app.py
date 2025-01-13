@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from routers import *
 
 app = FastAPI()
@@ -14,9 +15,10 @@ app.add_middleware(
 app.include_router(assignment_router)
 app.include_router(operator_router)
 
+
 @app.on_event("startup")
 async def startup():
-    from database.models import BaseModel
     from database.db import engine
+    from database.models import BaseModel
 
     BaseModel.metadata.create_all(bind=engine)
