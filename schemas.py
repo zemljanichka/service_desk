@@ -1,5 +1,12 @@
 import datetime
 from pydantic import BaseModel
+from enum import Enum
+
+
+class Status(Enum):
+    pending = "pending"
+    processing = "processing"
+    closed = "closed"
 
 
 class Operator(BaseModel):
@@ -12,4 +19,4 @@ class Assignment(BaseModel):
     email: str
     text: str
     operator_id: int | None = None
-    status: str
+    status: Status = Status.pending
