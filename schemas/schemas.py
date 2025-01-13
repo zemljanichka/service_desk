@@ -2,6 +2,8 @@ import datetime
 
 from pydantic import BaseModel
 
+from schemas import Status
+
 
 class Operator(BaseModel):
     username: str
@@ -14,3 +16,8 @@ class Assignment(BaseModel):
     text: str
     operator_id: int | None = None
     status: Status = Status.pending
+
+
+class OperatorResponse(BaseModel):
+    id: int
+    username: str
