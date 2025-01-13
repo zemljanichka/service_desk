@@ -14,8 +14,10 @@ class BaseModel(DeclarativeBase):
         return SessionLocal().scalar(select(cls).where(*filter))
 
     @classmethod
-    async def select(cls, *filter):
+    async def select(cls, *filter, order_by=None):
         query = select(cls).where(*filter)
+        if order_by is not None:
+            query = query.order_by(order_by)
         return SessionLocal().scalars(query).all()
 
     @classmethod

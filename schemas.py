@@ -10,6 +10,11 @@ class Status(Enum):
     closed = "closed"
 
 
+class Ordering(Enum):
+    asc = "asc"
+    desc = "desc"
+
+
 class Operator(BaseModel):
     username: str
     hashed_password: str

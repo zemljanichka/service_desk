@@ -1,14 +1,14 @@
 from fastapi import APIRouter
 
-from schemas import Assignment
+from schemas import Assignment, Ordering, Status
 from services import AssignmentService
 
 router = APIRouter(prefix="/assignment", tags=["assignment"])
 
 
 @router.get("/")
-async def get_assignments():
-    return await AssignmentService.get_assignments()
+async def get_assignments(status: Status = None, order_by: Ordering = None):
+    return await AssignmentService.get_assignments(status, order_by)
 
 
 @router.post("/")

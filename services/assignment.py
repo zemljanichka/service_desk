@@ -1,12 +1,18 @@
 from database import AssignmentModel
-from schemas import Assignment
+from schemas import Assignment, Ordering, Status
 
 
 class AssignmentService:
 
     @staticmethod
-    async def get_assignments():
-        return await AssignmentModel.select()
+    async def get_assignments(status: Status = None, order_by: Ordering = None):
+        if order_by == Ordering.asc:
+            order = AssignmentModel.ts_created
+        else:
+            order = AssignmentModel.ts_created.desc()
+        if status is not None:
+            return await AssignmentModel.select(AssignmentModel.status == status, order_by=order)
+        return await AssignmentModel.select(order_by=order)
 
     @staticmethod
     async def create_assignment(assignment_data: Assignment):
