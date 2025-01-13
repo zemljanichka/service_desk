@@ -18,7 +18,7 @@ app.include_router(operator_router)
 
 @app.on_event("startup")
 async def startup():
-    from database.db import engine
-    from database.models import BaseModel
+    from database import engine
+    from database import BaseModel
 
     BaseModel.metadata.create_all(bind=engine)

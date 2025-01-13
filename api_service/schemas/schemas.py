@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel
 
-from schemas import Status
+from .enum import Status
 
 
 class Operator(BaseModel):

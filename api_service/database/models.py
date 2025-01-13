@@ -50,7 +50,7 @@ class Assignment(BaseModel):
     email = Column(String, nullable=False)
     text = Column(String, nullable=False)
     operator_id = Column(Integer, ForeignKey("operator.id"), nullable=True, default=None)
-    status = Column(Enum(Status))
+    status = Column(Enum(Status), default=Status.pending)
 
 
 class Operator(BaseModel):
