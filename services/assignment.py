@@ -1,5 +1,5 @@
 from database import AssignmentModel
-from schemas import Assignment, Ordering, Status
+from schemas import Assignment, OperatorResponse, Ordering, Status
 
 
 class AssignmentService:
@@ -19,9 +19,9 @@ class AssignmentService:
         return await AssignmentModel.insert(**assignment_data.dict())
 
     @staticmethod
-    async def take_assignment(assignment_id: int, operator_id: int):
+    async def take_assignment(assignment_id: int, operator: OperatorResponse):
         return await AssignmentModel.update(
-            AssignmentModel.id == assignment_id, update_data={AssignmentModel.operator_id: operator_id}
+            AssignmentModel.id == assignment_id, update_data={AssignmentModel.operator_id: operator.id}
         )
 
     @staticmethod
