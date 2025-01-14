@@ -1,7 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from tasks.assignment import read_mail
 
 from routers import *
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
+scheduler = BackgroundScheduler()
 
 app = FastAPI()
 app.add_middleware(
@@ -21,3 +26,17 @@ async def startup():
     from database import BaseModel, engine
 
     BaseModel.metadata.create_all(bind=engine)
+
+    scheduler.add_job(
+        read_mail.send,
+        'interval', minutes=2, id='mail_reader'
+    )
+    try:
+        scheduler.start()
+    except Exception:
+        scheduler.shutdown()
+
+
+@app.on_event("shutdown")
+def shutdown():
+    scheduler.remove_job("mail_reader")
