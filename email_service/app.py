@@ -34,9 +34,11 @@ read_conf = {
     "mail_server": os.environ.get("IMAP_MAIL_SERVER", "imap.yandex.ru"),
 }
 
+default_body = "Обращение принято в работу"
+
 
 @app.post("/send_email")
-async def send_email(email_address: str = Body(), subject: str = Body(), body: str = Body()):
+async def send_email(email_address: str = Body(), subject: str = Body(), body: str = Body(default_body)):
     message = MessageSchema(subject=subject, recipients=[email_address], body=body, subtype=MessageType.plain)
     fm = FastMail(send_conf)
     await fm.send_message(message)
@@ -48,7 +50,10 @@ async def read_email():
     imap = imaplib.IMAP4_SSL(read_conf["mail_server"])
     imap.login(read_conf["mail_address"], read_conf["mail_password"])
     imap.select("INBOX")
-    mail_num = imap.uid('search', "UNSEEN", "ALL")[1][0].split(b' ')
+    mail_num = imap.uid('search', "UNSEEN", "ALL")[1][0]
+    if not mail_num:
+        return []
+    mail_num = mail_num.split(b' ')
     response = []
     for mail in mail_num:
         res, msg = imap.uid('fetch', mail, '(RFC822)')

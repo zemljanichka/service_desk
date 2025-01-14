@@ -48,7 +48,8 @@ class Assignment(BaseModel):
 
     ts_created = Column(DateTime, nullable=False)
     email = Column(String, nullable=False)
-    text = Column(String, nullable=False)
+    subject = Column(String, nullable=True)
+    body = Column(String, nullable=True)
     operator_id = Column(Integer, ForeignKey("operator.id"), nullable=True, default=None)
     status = Column(Enum(Status), default=Status.pending)
 
