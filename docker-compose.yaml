@@ -58,7 +58,3 @@ services:
 #      MAIL_SSL_TLS: ""
 #      TEMPLATE_FOLDER: ""
 #      IMAP_MAIL_SERVER: ""
-#      SSL_CERT_FILE: "/Users/macbook/Documents/test_assignment/service_desk/venv/lib/python3.12/site-packages/certifi/cacert.pem"
-#
-#    volumes:
-#      -
