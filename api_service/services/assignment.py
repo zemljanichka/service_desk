@@ -1,6 +1,6 @@
 from database import AssignmentModel
-from schemas import Assignment, OperatorResponse, Ordering, Status
 from exeptions import UnauthorizedError
+from schemas import Assignment, OperatorResponse, Ordering, Status
 
 
 class AssignmentService:
@@ -34,7 +34,8 @@ class AssignmentService:
             raise UnauthorizedError
         new_status = AssignmentService.get_new_status(assignment)
         return await AssignmentModel.update(
-            AssignmentModel.id == assignment_id, update_data={AssignmentModel.operator_id: operator.id, AssignmentModel.status: new_status}
+            AssignmentModel.id == assignment_id,
+            update_data={AssignmentModel.operator_id: operator.id, AssignmentModel.status: new_status},
         )
 
     @staticmethod
@@ -43,7 +44,9 @@ class AssignmentService:
         assignment = await AssignmentModel.get_single(AssignmentModel.id == assignment_id)
         if assignment.operator_id == operator.id:
             new_status = AssignmentService.get_new_status(assignment)
-            return await AssignmentModel.update(AssignmentModel.id == assignment_id, update_data={AssignmentModel.status: new_status})
+            return await AssignmentModel.update(
+                AssignmentModel.id == assignment_id, update_data={AssignmentModel.status: new_status}
+            )
         raise UnauthorizedError
 
     @staticmethod

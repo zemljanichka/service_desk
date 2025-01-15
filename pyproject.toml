@@ -1,0 +1,6 @@
+[tool.isort]
+profile = "black"
+
+[[tool.mypy.overrides]]
+module = ["requests.*"]
+follow_untyped_imports = true

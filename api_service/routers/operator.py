@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
-
-from services import OperatorService
-from utils import authorized_user, validate_operator, hash_password
-from schemas import Operator, OperatorResponse, TokenOut
 from database import OperatorModel
+from fastapi import APIRouter, Body, Depends, HTTPException, status
+from schemas import Operator, OperatorResponse, TokenOut
+from services import OperatorService
+from utils import authorized_user, hash_password, validate_operator
 
 router = APIRouter(prefix="/operator", tags=["operator"])
 

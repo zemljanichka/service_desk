@@ -1,2 +1,2 @@
-from .auth import generate_token, validate_operator, hash_password
+from .auth import generate_token, hash_password, validate_operator
 from .dependencies import authorized_user

@@ -1,7 +1,6 @@
 import jwt
-from passlib.context import CryptContext
-
 from database import OperatorModel
+from passlib.context import CryptContext
 
 ALGORITHM = "HS256"
 SECRET_KEY = "ZemljanichkaServiceDesk"

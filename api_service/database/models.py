@@ -1,9 +1,7 @@
-from sqlalchemy import (Column, DateTime, Enum, ForeignKey, Integer, String,
-                        select)
-from sqlalchemy.orm import DeclarativeBase
-
 from database.db import SessionLocal
 from schemas import Status
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, select
+from sqlalchemy.orm import DeclarativeBase
 
 
 class BaseModel(DeclarativeBase):
@@ -51,7 +49,7 @@ class Assignment(BaseModel):
     subject = Column(String, nullable=True)
     body = Column(String, nullable=True)
     operator_id = Column(Integer, ForeignKey("operator.id"), nullable=True, default=None)
-    status = Column(Enum(Status), default=Status.pending)
+    status: Status = Column(Enum(Status), default=Status.pending)
 
 
 class Operator(BaseModel):

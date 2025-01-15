@@ -1,2 +1,9 @@
 from .enum import Ordering, Status
-from .schemas import Assignment, Operator, OperatorResponse, AssignmentEmail, TokenOut, AssignmentWithId
+from .schemas import (
+    Assignment,
+    AssignmentEmail,
+    AssignmentWithId,
+    Operator,
+    OperatorResponse,
+    TokenOut,
+)

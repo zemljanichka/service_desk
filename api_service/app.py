@@ -1,10 +1,8 @@
+from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routers import assignment_router, frontend_router, operator_router
 from tasks.assignment import read_mail
-
-from routers import *
-
-from apscheduler.schedulers.background import BackgroundScheduler
 
 scheduler = BackgroundScheduler()
 
@@ -22,17 +20,13 @@ app.include_router(operator_router)
 app.include_router(frontend_router)
 
 
-
 @app.on_event("startup")
 async def startup():
     from database import BaseModel, engine
 
     BaseModel.metadata.create_all(bind=engine)
 
-    scheduler.add_job(
-        read_mail.send,
-        'interval', seconds=30, id='mail_reader'
-    )
+    scheduler.add_job(read_mail.send, "interval", seconds=30, id="mail_reader")
     try:
         scheduler.start()
     except Exception:

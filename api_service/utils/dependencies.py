@@ -1,6 +1,6 @@
 from fastapi import Header, HTTPException, status
-
 from schemas import OperatorResponse
+
 from .auth import decode_token, validate_operator
 
 
