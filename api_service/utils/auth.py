@@ -10,6 +10,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def validate_operator(username: str, password: str | None = None):
+    """Проверка данных оператора"""
     operator = await OperatorModel.get_single(OperatorModel.username == username)
     if not operator:
         return None
