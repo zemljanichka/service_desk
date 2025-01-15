@@ -1,0 +1,64 @@
+version: '3'
+
+volumes:
+    postgres:
+
+services:
+  postgresql:
+    image: postgres
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "db"
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/data/postgres
+
+  service_desk:
+    build: ./api_service
+    command: uvicorn app:app --host 0.0.0.0 --port 8002
+    ports:
+      - 8002:8002
+    environment:
+      POSTGRES_URL: "postgresql+psycopg2://postgres:postgres@postgresql:5432/db"
+    depends_on:
+      - postgresql
+      - dramatiq
+
+  dramatiq:
+    build: ./api_service
+    command: dramatiq tasks.assignment
+    depends_on:
+      - redis
+    environment:
+      POSTGRES_URL: "postgresql+psycopg2://postgres:postgres@postgresql:5432/db"
+
+
+  redis:
+    restart: unless-stopped
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  email_service:
+    build: ./email_service
+    command: uvicorn app:app --host 0.0.0.0 --port 8004
+    ports:
+      - 8004:8004
+    depends_on:
+      - service_desk
+#    environment:
+#      MAIL_USERNAME: ""
+#      MAIL_PASSWORD: ""
+#      MAIL_FROM: ""
+#      MAIL_PORT: ""
+#      MAIL_SERVER: ""
+#      MAIL_STARTTLS: ""
+#      MAIL_SSL_TLS: ""
+#      TEMPLATE_FOLDER: ""
+#      IMAP_MAIL_SERVER: ""
+#      SSL_CERT_FILE: "/Users/macbook/Documents/test_assignment/service_desk/venv/lib/python3.12/site-packages/certifi/cacert.pem"
+#
+#    volumes:
+#      -
