@@ -25,8 +25,8 @@ send_conf = ConnectionConfig(
     MAIL_SERVER=os.environ.get("SMTP_MAIL_SERVER", "smtp.yandex.ru"),
     MAIL_STARTTLS=os.environ.get("SMTP_MAIL_STARTTLS", True),
     MAIL_SSL_TLS=os.environ.get("SMTP_MAIL_SSL_TLS", False),
+    TEMPLATE_FOLDER='./'
 )
-
 
 read_conf = {
     "mail_address": os.environ.get("MAIL_ADDRESS", "email.ttest@ya.ru"),
@@ -39,14 +39,17 @@ default_body = "Обращение принято в работу"
 
 @app.post("/send_email")
 async def send_email(email_address: str = Body(), subject: str = Body(), body: str = Body(default_body)):
-    message = MessageSchema(subject=subject, recipients=[email_address], body=body, subtype=MessageType.plain)
+    """Отправка email-сообщения по SMTP"""
+    message = MessageSchema(subject=subject, recipients=[email_address], template_body={"body": body},
+                            subtype=MessageType.html)
     fm = FastMail(send_conf)
-    await fm.send_message(message)
+    await fm.send_message(message, template_name="./email_template.html")
     return {"message": "email has been sent"}
 
 
 @app.get("/read")
 async def read_email():
+    """Чтение всех непрочитанных сообщений"""
     imap = imaplib.IMAP4_SSL(read_conf["mail_server"])
     imap.login(read_conf["mail_address"], read_conf["mail_password"])
     imap.select("INBOX")
@@ -56,9 +59,12 @@ async def read_email():
     mail_num = mail_num.split(b' ')
     response = []
     for mail in mail_num:
+        # NOTE: Чтение письма по id
         res, msg = imap.uid('fetch', mail, '(RFC822)')
         msg = email.message_from_bytes(msg[0][1])
+        # NOTE: Получение времени и адреса отправителя
         mail_response = {"ts_created": email.utils.parsedate_to_datetime(msg["Date"]), "email": msg["Return-path"]}
+        # NOTE: Получение темы письма
         if msg["Subject"]:
             letter_subject = email.header.decode_header(msg["Subject"])[0][0]
         else:
@@ -66,6 +72,7 @@ async def read_email():
         if isinstance(letter_subject, bytes):
             letter_subject.decode()
         mail_response["subject"] = letter_subject
+        # NOTE: Получение текста письма
         payload = msg.get_payload()
         body = []
         try:
