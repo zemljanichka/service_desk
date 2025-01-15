@@ -41,4 +41,4 @@ async def startup():
 
 @app.on_event("shutdown")
 def shutdown():
-    scheduler.remove_job("mail_reader")
+    scheduler.remove_all_jobs()

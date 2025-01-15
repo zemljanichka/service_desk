@@ -1,0 +1,12 @@
+version: '3'
+
+
+services:
+  test_postgresql:
+    image: postgres
+    environment:
+      POSTGRES_USER: "test_postgres"
+      POSTGRES_PASSWORD: "test_postgres"
+      POSTGRES_DB: "test_db"
+    ports:
+      - 5434:5432
