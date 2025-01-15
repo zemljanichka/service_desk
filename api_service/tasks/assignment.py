@@ -9,7 +9,7 @@ from schemas import AssignmentEmail
 @dramatiq.actor()
 def send_mail(email: str, subject: str, body: str | None = None):
     try:
-        r = requests.post("http://localhost:8004/send_email",
+        r = requests.post("http://email_service:8004/send_email",
                           json={'email_address': email, 'subject': subject, 'body': body})
         if not r.ok:
             raise Exception('Failed to send message: ', r.json())
@@ -20,7 +20,7 @@ def send_mail(email: str, subject: str, body: str | None = None):
 
 async def read_mail_async():
     try:
-        response = requests.get("http://localhost:8004/read")
+        response = requests.get("http://email_service:8004/read")
         if not response.ok:
             raise Exception('Failed to read messages')
         assignments_data: list[AssignmentEmail] = response.json()

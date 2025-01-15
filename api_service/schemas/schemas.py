@@ -5,6 +5,10 @@ from pydantic import BaseModel
 from .enum import Status
 
 
+class BaseModelWithId(BaseModel):
+    id: int
+
+
 class Operator(BaseModel):
     username: str
     hashed_password: str
@@ -20,12 +24,19 @@ class Assignment(BaseModel):
 
 
 class AssignmentEmail(BaseModel):
-    ts_created: datetime.datetime | str
+    ts_created: datetime.datetime
     email: str
     subject: str | None = None
     body: str | None = None
 
 
-class OperatorResponse(BaseModel):
-    id: int
+class AssignmentWithId(BaseModelWithId, Assignment):
+    pass
+
+
+class OperatorResponse(BaseModelWithId):
     username: str
+
+
+class TokenOut(BaseModel):
+    token: str
