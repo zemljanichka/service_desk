@@ -19,6 +19,8 @@ app.add_middleware(
 
 app.include_router(assignment_router)
 app.include_router(operator_router)
+app.include_router(frontend_router)
+
 
 
 @app.on_event("startup")
@@ -29,7 +31,7 @@ async def startup():
 
     scheduler.add_job(
         read_mail.send,
-        'interval', minutes=2, id='mail_reader'
+        'interval', seconds=30, id='mail_reader'
     )
     try:
         scheduler.start()

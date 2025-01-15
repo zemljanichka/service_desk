@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+  <title>Главная</title>
+</head>
+
+<body>
+  <header class="sticky-top">
+    <nav class="navbar">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="./index.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white"
+            class="bi bi-calendar-check d-inline-block align-text-bottom" viewBox="0 0 16 16">
+            <path
+              d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+            <path
+              d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+          </svg>
+          <h2 class="d-inline-block">ServiceDesk</h2>
+        </a>
+        <div class="d-grid gap-4 d-md-flex justify-content-md-end">
+          <button type="button" class="btn out-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Выйти
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="m-3 text-center">
+    <h1>Список обращений</h1>
+  </div>
+  <div class="container">
+    <h5 class="d-inline-block">Сортировка: </h5>
+    <div class="dropdown d-inline-block mx-3">
+      <label for="selectTime" class="form-label">По времени получения</label>
+      <select class="form-select" id="selectTime">
+        <option selected></option>
+        <option value="asc">Сначала старые</option>
+        <option value="desc">Сначала новые</option>
+      </select>
+    </div>
+    <div class="dropdown d-inline-block mx-3">
+      <label for="selectStatus" class="form-label">По статусу обращения</label>
+      <select class="form-select" id="selectStatus">
+        <option selected></option>
+        <option value="pending">Открыто</option>
+        <option value="processing">В работе</option>
+        <option value="closed">Закрыто</option>
+      </select>
+    </div>
+    <div class="dropdown d-inline-block mx-3">
+      <button class="btn other-button" id="applyFilters">
+        Применить
+      </button>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <table class="table table-success table-hover" id="assignmentTable">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Тема</th>
+          <th scope="col">Статус</th>
+          <th scope="col">Время обращения</th>
+          <th scope="col">Оператор</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+  </div>
+
+
+
+  <!-- Модальное окно -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center" id="exampleModalLabel">Выход</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          Точно хотите выйти?
+        </div>
+        <div class="modal-footer">
+          <a class="btn out-button" onclick="getOut()">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+  <script>
+    const url = "http://127.0.0.1:8002";
+    const token = localStorage.getItem('token');
+    if (token === null) {
+      window.location.href = url + "/frontend/";
+    }
+
+    const getUrl = "http://127.0.0.1:8002/assignments/"
+    const tableBody = document.querySelector('#assignmentTable tbody');
+    function renderTable(data) {
+      tableBody.innerHTML = '';
+      data.forEach((assignment, index) => {
+        const row = document.createElement('tr');
+        var showStatus = ''
+        if (assignment.status === 'closed') {
+          showStatus = 'Закрыто';
+        }
+        if (assignment.status === 'processing') {
+          showStatus = 'В процессе';
+        }
+        if (assignment.status === 'pending') {
+          showStatus = 'Открыто';
+        }
+        row.innerHTML = `
+          <th scope="row">${index + 1}</th>
+          <td>${assignment.subject}</td>
+          <td>${showStatus}</td>
+          <td>${assignment.ts_created}</td>
+          <td>${assignment.operator_id ? assignment.operator_id : '-'}</td>
+          <td>
+            <button class="btn other-button" onclick=getAssignment(${assignment.id})>
+              Просмотреть
+            </button>
+          </td>
+            `;
+        tableBody.appendChild(row);
+      });
+    }
+    fetch(getUrl, {
+      headers: { 'Content-Type': 'application/json', 'token': token },
+      // body : {"status": statusValue, "order_by" : orderValue}
+    })
+      .then(response => response.json())
+      .then(data => renderTable(data));
+
+    document.getElementById('applyFilters').addEventListener('click', () => {
+      const orderFilter = document.getElementById('selectTime').value 
+      const statusFilter = document.getElementById('selectStatus').value
+      console.log(orderFilter, statusFilter);
+      const orderQuery = orderFilter ? `?order_by=${orderFilter}&` : '?';
+      const statusQuery = statusFilter ? `status=${statusFilter}` : '';
+      const query = orderQuery + statusQuery
+      fetch(`${getUrl}${query}`, {
+        headers: { 'Content-Type': 'application/json', 'token': token },
+      })
+        .then(response => response.json())
+        .then(data => renderTable(data));
+    })
+
+    function getAssignment(id) {
+      if (id) {
+        window.location.href = url + "/frontend/assignments/" + id; 
+      }
+    }
+
+  </script>
+</body>
+
+</html>
+
+<style>
+  .navbar {
+    background-color: #13242A;
+  }
+
+  .navbar-brand {
+    color: #ffffff !important;
+  }
+
+  .out-button {
+    background-color: #E24D28;
+    color: #ffffff !important;
+  }
+
+  .sec-button {
+    background-color: #E9C46A;
+  }
+
+  .other-button {
+    background-color: #2A9D8F;
+    color: #ffffff !important;
+  }
+</style>
